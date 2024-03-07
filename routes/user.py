@@ -30,3 +30,12 @@ def find_user(id: str) -> dict:
 def delete_user(id: str):
     conn.local.user.find_one_and_delete({"_id": ObjectId(id)})
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+@router.put("/users/{id}")
+def update_user(id: str, user: User):
+    conn.local.user.find_one_and_update({
+        "_id": ObjectId(id)
+    }, {
+        "$set": dict(user) # convert user model to dict
+    })
+    return userEntity(conn.local.user.find_one({"_id": ObjectId(id)}))
